@@ -15,11 +15,14 @@ margin:auto;
 top:100px;
 }
 
+.main div{
+width:7px;
+height:7px;  
+}
+
 .default{
 position:relative;
 display:inline-block;
-width:10px;
-height:10px;
 border-radius:1px;
 background-color:#3b3;
 cursor:crosshair;
@@ -32,8 +35,7 @@ background-color:#7f7;
 .wall{
 position:relative;
 display:inline-block;
-width:10px;
-height:10px;
+
 border-radius:3px;
 background-color:#922;
 cursor:crosshair;
@@ -42,8 +44,6 @@ cursor:crosshair;
 .cheese{
 position:relative;
 display:inline-block;
-width:10px;
-height:10px;
 border-radius:3px;
 background-color:#ff2;
 cursor:crosshair;
@@ -52,8 +52,6 @@ cursor:crosshair;
 .rat{
 position:relative;
 display:inline-block;
-width:10px;
-height:10px;
 border-radius:4px;
 background-color:#c9f;
 cursor:progress;
