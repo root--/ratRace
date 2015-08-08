@@ -20,7 +20,7 @@
  var speed = 20;
 
 // size
-var unitSize = 8;
+var unitSize = 9;
 
 // field
 var xSize = 90;
