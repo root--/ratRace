@@ -17,7 +17,7 @@
 //direction declaration of the movement :
 // 0- up ; 1- down ; 3-left ; 4- right
 
- var speed = 20;
+ var speed = 120;
 
 // size
 var unitSize = 9;
@@ -66,7 +66,7 @@ function findStep() {
     }
     else {
         clearInterval(run);
-        alert("Finish \n Rat 1:" + r.steps + " steps \n" + "Rat 2:" + r2.steps + " steps");
+        console.log("Finish \n Rat 1:" + r.steps + " steps \n" + "Rat 2:" + r2.steps + " steps");
     }
 }
 
@@ -100,7 +100,7 @@ function getWalls() {
         var x = +Math.round(Math.random() * (xSize - 1));
         var y = +Math.round(Math.random() * (ySize - 1));
         // direction to build the wall
-        // 0- up ; 1- down ; 3-left ; 4- right
+        // 0- up ; 1- down ; 2-left ; 3- right
         var wallDir = Math.round(Math.random() * 3);
         // wall length	
         var wallLength = Math.round(Math.random() * (wallMaxLength - wallMinLength)) + wallMinLength;
@@ -109,7 +109,7 @@ function getWalls() {
         for (var j = 0; j < wallLength; j++) {
             // map the wall brick
             var objId = id(x, y);
-            pt[objId].change('wall');
+            pt[objId].change('wall','');
             if (wallDir == 0 && y != 0)
                 y--; //up
             if (wallDir == 1 && y < (ySize - 1))
@@ -291,7 +291,7 @@ function rat() {
     }
 
     this.shift = function (newX, newY) {
-        pt[id(this.x, this.y)].change("default", "");
+        pt[id(this.x, this.y)].change("track", "");
         pt[id(newX, newY)].change("rat", this.name);
         this.x = newX;
         this.y = newY;
@@ -473,7 +473,7 @@ function rat_emproved() {
     }
 
     this.shift = function (newX, newY) {
-        pt[id(this.x, this.y)].change("default", "");
+        pt[id(this.x, this.y)].change("track", "");
         pt[id(newX, newY)].change("rat", this.name);
         this.x = newX;
         this.y = newY;

@@ -12,47 +12,45 @@ border: solid 2px #eee;
 border-radius:5px;
 background-color:#000;
 margin:auto;
-top:100px;
+top:5%;
 }
 
 .main div{
 width:9px;
-height:9px;  
+height:9px;
+position:relative;
+display:inline-block;
+cursor:crosshair;
+border: solid 0px #eee;
 }
 
 .default{
-position:relative;
-display:inline-block;
 border-radius:1px;
 background-color:#3b3;
-cursor:crosshair;
 }
 .default:hover{
 border-radius:5px;
 background-color:#7f7;
 }
 
-.wall{
-position:relative;
-display:inline-block;
+.track{
+border-radius:0px;
+background-color:#4c4;
+}
 
+
+.wall{
 border-radius:3px;
 background-color:#922;
-cursor:crosshair;
 }
 
 .cheese{
-position:relative;
-display:inline-block;
 border-radius:3px;
 background-color:#ff2;
-cursor:crosshair;
 }
 
 .rat{
-position:relative;
-display:inline-block;
-border-radius:4px;
+border-radius:2px;
 background-color:#c9f;
 cursor:progress;
 }
