@@ -23,8 +23,8 @@
 var unitSize = 9;
 
 // field
-var xSize = 90;
-var ySize = 90;
+var xSize = 70;
+var ySize = 70;
 
 var wallDencity = 10;
 // walls
