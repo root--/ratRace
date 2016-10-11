@@ -5,7 +5,7 @@
 //  02 12 22
 //  Y
 //
-// ID of "space" obj is "X Y"
+// ID of "space" obj is "X,Y"
 //
 // space obj's statuses :
 // "default" - free space
@@ -139,7 +139,7 @@ function Race(viewId, name) {
     }
 
 
-// rat cretion
+// rat creation
     this.createRat = function () {
         window.r = new rat_1(this);
         r.born();
@@ -157,25 +157,5 @@ function Race(viewId, name) {
         this.pt[objId].id = objId;
         this.pt[objId].fill();
     }
-
-}
-
-//point object
-function Point(viewId) {
-    this.x = 0;
-    this.y = 0;
-    this.id = "";
-    this.state = "";
-    this.fill = function () {
-        document.getElementById(viewId).insertAdjacentHTML(
-            'beforeend',
-            '<div id="' + this.id + '" class="default"></div>'
-        );
-    };
-
-    this.change = function (state) {
-        this.state = state;
-        document.getElementById(this.id).className = state;
-    };
 
 }
