@@ -120,20 +120,21 @@ function rat_2() {
                     this.des[desId] = this.steps; //increase decision counter
                 move = true;
             }
-            ;
+
             if (direction == 1 && ((this.steps - this.des[desId] > this.maxComeBack) || this.des[desId] == 0)) {
                 this.shift(this.x, this.y + 1);
                 if (mark)
                     this.des[desId] = this.steps;
                 move = true;
             }
-            ;
+
             if (direction == 2 && ((this.steps - this.des[desId] > this.maxComeBack) || this.des[desId] == 0)) {
                 this.shift(this.x - 1, this.y);
                 if (mark)
                     this.des[desId] = this.steps;
                 move = true;
             }
+
             if (direction == 3 && ((this.steps - this.des[desId] > this.maxComeBack) || this.des[desId] == 0)) {
                 this.shift(this.x + 1, this.y);
                 if (mark)
@@ -171,6 +172,5 @@ function rat_2() {
                 this.view[3] = true;
         }
     };
-
 
 }

@@ -1,4 +1,4 @@
-function rat_1() {
+function rat_1(race) {
     this.name = "";
     this.x = 0;
     this.y = 0;
@@ -18,35 +18,39 @@ function rat_1() {
 
     this.born = function () {
         while (!birth) {
-            this.preX = +Math.round(Math.random() * (xSize - 1));
-            this.preY = +Math.round(Math.random() * (ySize - 1));
+            this.preX = +Math.round(Math.random() * (race.xSize - 1));
+            this.preY = +Math.round(Math.random() * (race.ySize - 1));
             var check = this.checkMap(this.preX, this.preY);
             if (check) {
                 this.x = this.preX;
                 this.y = this.preY;
-                this.curId = this.x + " " + this.y;
+                this.curId = race.id(this.x, this.y);
                 var birth = true;
             }
         }
 
-        pt[this.curId].change('rat');
+        race.pt[this.curId].change('rat');
+    }
+
+    //  rat decision id formatter
+    this.dId = function (x, y, dir) {
+        return +x + " " + y + " " + dir;
     }
 
     this.checkMap = function (x, y) {
-        var objId = id(x, y);
-        var state = pt[objId].state;
+        var objId = race.id(x, y);
+        var state = race.pt[objId].state;
         if (state != 'wall')
             return true;
         return false;
     }
 
     this.dirPriority = function () {
-
         var prepare_priDir1 = -1;
         var prepare_priDir2 = -1;
         // find up or down
-        var xDif = chX - this.x;
-        var yDif = chY - this.y;
+        var xDif = race.chX - this.x;
+        var yDif = race.chY - this.y;
         // vertical detection
         if (yDif > 0)
             prepare_priDir1 = 1;
@@ -68,7 +72,7 @@ function rat_1() {
             this.priDir2 = prepare_priDir1;
         }
 
-        //priDir=this.priDir1;
+        // wee got it !
         if (xDif == 0 && yDif == 0) {
             this.priDir1 = -1;
             this.priDir2 = -1;
@@ -78,7 +82,7 @@ function rat_1() {
     this.move = function () {
         var moving = false;
         this.look(this.x, this.y);
-        var dirPri = this.dirPriority();
+        this.dirPriority();
         this.movements++;
         // if no selected direction ( rat find the cheese )
         if (this.priDir1 < 0 && this.priDir2 < 0) {
@@ -108,7 +112,7 @@ function rat_1() {
 
         var move = false;
         if (this.view[direction]) {
-            var desId = dId(this.x, this.y, direction);
+            var desId = this.dId(this.x, this.y, direction);
             //activate desicion counter;
             if (this.des[desId] === undefined)
                 this.des[desId] = 0;
@@ -118,20 +122,21 @@ function rat_1() {
                     this.des[desId]++; //increase decision counter
                 move = true;
             }
-            ;
+
             if (direction == 1 && this.des[desId] < this.maxComeBack) {
                 this.shift(this.x, this.y + 1);
                 if (mark)
                     this.des[desId]++;
                 move = true;
             }
-            ;
+
             if (direction == 2 && this.des[desId] < this.maxComeBack) {
                 this.shift(this.x - 1, this.y);
                 if (mark)
                     this.des[desId]++;
                 move = true;
             }
+
             if (direction == 3 && this.des[desId] < this.maxComeBack) {
                 this.shift(this.x + 1, this.y);
                 if (mark)
@@ -143,37 +148,31 @@ function rat_1() {
     }
 
     this.shift = function (newX, newY) {
-        pt[id(this.x, this.y)].change("track", "");
-        pt[id(newX, newY)].change("rat", this.name);
+        race.pt[race.id(this.x, this.y)].change("track", "");
+        race.pt[race.id(newX, newY)].change("rat", this.name);
         this.x = newX;
         this.y = newY;
         this.steps++;
     }
 
-
-
     this.look = function (x, y) {
         this.view = {0: false, 1: false, 2: false, 3: false};
         if (y > 0) { //look up;
-            if (pt[id(x, y - 1)].state != "wall")
+            if (race.pt[race.id(x, y - 1)].state != "wall")
                 this.view[0] = true;
         }
-        if (y < (ySize - 1)) { // down
-            if (pt[id(x, y + 1)].state != "wall")
+        if (y < (race.ySize - 1)) { // down
+            if (race.pt[race.id(x, y + 1)].state != "wall")
                 this.view[1] = true;
         }
         if (x > 0) { //left
-            if (pt[id(x - 1, y)].state != "wall")
+            if (race.pt[race.id(x - 1, y)].state != "wall")
                 this.view[2] = true;
         }
-        if (x < (xSize - 1)) { //right
-            if (pt[id(x + 1, y)].state != "wall")
+        if (x < (race.xSize - 1)) { //right
+            if (race.pt[race.id(x + 1, y)].state != "wall")
                 this.view[3] = true;
         }
     }
-
-
-
-
 
 }

@@ -28,9 +28,9 @@ var ySize = 70;
 
 var wallDencity = 10;
 // walls
-var spaces = xSize * ySize 
-var wallNum = +Math.round(( spaces ) / ( wallDencity + ( spaces/1000 )));
-var wallMaxLength = +Math.round((( xSize + ySize)/20) + 1) ;
+var spaces = xSize * ySize
+var wallNum = +Math.round(( spaces ) / ( wallDencity + ( spaces / 1000 )));
+var wallMaxLength = +Math.round((( xSize + ySize) / 20) + 1);
 var wallMinLength = 2;
 // cheese
 
@@ -48,7 +48,7 @@ function init() {
     createRat();
 }
 
-function setStyles(){
+function setStyles() {
     document.getElementById('main').style.width = unitSize * xSize;
     document.getElementById('main').style.height = unitSize * ySize;
 }
@@ -109,7 +109,7 @@ function getWalls() {
         for (var j = 0; j < wallLength; j++) {
             // map the wall brick
             var objId = id(x, y);
-            pt[objId].change('wall','');
+            pt[objId].change('wall', '');
             if (wallDir == 0 && y != 0)
                 y--; //up
             if (wallDir == 1 && y < (ySize - 1))
@@ -134,9 +134,7 @@ function throwCheese(x, y) {
     runTime();
 }
 
-function rebiuldUnit(x ,y) {
-    alert(x);
-}
+
 // rat cretion
 function createRat() {
     window.r = new rat_1();
@@ -144,10 +142,10 @@ function createRat() {
 
     window.r2 = new rat_2();
     r2.born();
-   
+
     window.r3 = new rat_2();
     r3.born();
-   
+
     r2.name = "";
 }
 
@@ -160,16 +158,16 @@ function createItem(x, y) {
     pt[objId].id = objId;
     pt[objId].fill();
     pt[objId].change("default");
-    //return pt[objId]; 
 }
 
+//point object
 function point() {
     var x = 0;
     var y = 0;
     var id = "";
     var state = "";
     this.fill = function () {
-    document.write("<div id='" + this.id + "' class='' onclick='throwCheese(" + this.x + "," + this.y + ")'></div>");
+        document.write("<div id='" + this.id + "' class='' onclick='throwCheese(" + this.x + "," + this.y + ")'></div>");
     };
 
     this.change = function (state, name) {
