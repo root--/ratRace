@@ -1,12 +1,9 @@
-function rat_1(race) {
-    this.name = "";
+function rat(race) {
     this.x = 0;
     this.y = 0;
     this.preX = 0;
     this.preY = 0;
     this.curId = 0;
-    this.direction = 0;
-    this.predDirection = 0;
     this.finish = 0;
     this.movements = 0;
     this.steps = 0;
@@ -14,29 +11,59 @@ function rat_1(race) {
     this.priDir2 = -1;// priority direction2
     this.view = [];//current view around of the rat
     this.des = [];//all decisions of rat movement [x y dir]
-    this.maxComeBack = 1;
+    this.memorySize = 1;
 
+    // born of the rat
     this.born = function () {
         while (!birth) {
             this.preX = +Math.round(Math.random() * (race.xSize - 1));
             this.preY = +Math.round(Math.random() * (race.ySize - 1));
-            var check = this.checkMap(this.preX, this.preY);
-            if (check) {
+            if (this.checkMap(this.preX, this.preY)) {
                 this.x = this.preX;
                 this.y = this.preY;
                 this.curId = race.id(this.x, this.y);
                 var birth = true;
             }
         }
-
         race.pt[this.curId].change('rat');
+    }
+
+    // iterate each step
+    this.move = function () {
+        this.look(this.x, this.y);
+        this.dirPriority();
+        this.movements++;
+        // if no selected direction ( rat find the cheese )
+        if (this.priDir1 < 0 && this.priDir2 < 0) {
+            this.finish = true;
+            return;
+        }
+
+        // first priority direction
+        var moving = this.tryShift(this.priDir1, 1);
+        // try to move another priority direction
+        if (!moving) {
+            moving = this.tryShift(this.priDir2, 1);
+        }
+        //try to change direction and move
+        if (!moving) {
+            for (var i = 0; i < 100; i++) {
+                var randDir = Math.round(Math.random() * 3);
+                if (moving = this.tryShift(randDir, 0))
+                    break;// another direction
+            }
+        }
+        if (!moving) {
+            this.finish = true;// die without cheese :(
+        }
     }
 
     //  rat decision id formatter
     this.dId = function (x, y, dir) {
-        return +x + " " + y + " " + dir;
+        return +x + ' ' + y + ' ' + dir;
     }
 
+    //checking the map point for move thru it
     this.checkMap = function (x, y) {
         var objId = race.id(x, y);
         var state = race.pt[objId].state;
@@ -45,6 +72,7 @@ function rat_1(race) {
         return false;
     }
 
+    //compute direction for move
     this.dirPriority = function () {
         var prepare_priDir1 = -1;
         var prepare_priDir2 = -1;
@@ -79,65 +107,42 @@ function rat_1(race) {
         }
     }
 
-    this.move = function () {
-        var moving = false;
-        this.look(this.x, this.y);
-        this.dirPriority();
-        this.movements++;
-        // if no selected direction ( rat find the cheese )
-        if (this.priDir1 < 0 && this.priDir2 < 0) {
-            this.finish = true;
-            return;
-        }
-
-        moving = this.tryShift(this.priDir1, 1);// first priority direction
-        if (!moving) {
-            moving = this.tryShift(this.priDir2, 1);
-        }//second direction
-        //try to change direction
-        if (!moving) {
-            for (var i = 0; i < 100; i++) {
-                var randDir = Math.round(Math.random() * 3);
-                if (moving = this.tryShift(randDir, 0))
-                    break;// another direction
-            }
-        }
-        if (!moving)
-            this.finish = true;// die without cheese :(
-    }
-
+    // try to shift to priority direction
     this.tryShift = function (direction, mark) {
-        if (mark === undefined)
+        if (mark === undefined) {
             mark = false;
-
+        }
         var move = false;
         if (this.view[direction]) {
             var desId = this.dId(this.x, this.y, direction);
-            //activate desicion counter;
+            //activate decision counter;
             if (this.des[desId] === undefined)
                 this.des[desId] = 0;
-            if (direction == 0 && this.des[desId] < this.maxComeBack) { // direction and no max come back
+
+            var live = this.mustLive(desId);
+            // direction and no max come back
+            if (direction == 0 && live) {
                 this.shift(this.x, this.y - 1); // shift rat
                 if (mark)
                     this.des[desId]++; //increase decision counter
                 move = true;
             }
 
-            if (direction == 1 && this.des[desId] < this.maxComeBack) {
+            if (direction == 1 && live) {
                 this.shift(this.x, this.y + 1);
                 if (mark)
                     this.des[desId]++;
                 move = true;
             }
 
-            if (direction == 2 && this.des[desId] < this.maxComeBack) {
+            if (direction == 2 && live) {
                 this.shift(this.x - 1, this.y);
                 if (mark)
                     this.des[desId]++;
                 move = true;
             }
 
-            if (direction == 3 && this.des[desId] < this.maxComeBack) {
+            if (direction == 3 && live) {
                 this.shift(this.x + 1, this.y);
                 if (mark)
                     this.des[desId]++;
@@ -147,30 +152,37 @@ function rat_1(race) {
         return move;
     }
 
+    // decision to live ( it is not the end ! )
+    this.mustLive = function (desId) {
+        return this.des[desId] < this.memorySize
+    }
+
+    // shifting to next point
     this.shift = function (newX, newY) {
-        race.pt[race.id(this.x, this.y)].change("track", "");
-        race.pt[race.id(newX, newY)].change("rat", this.name);
+        race.pt[race.id(this.x, this.y)].change('track');
+        race.pt[race.id(newX, newY)].change('rat');
         this.x = newX;
         this.y = newY;
         this.steps++;
     }
 
+    // looking around for walls and create this.view image of space around
     this.look = function (x, y) {
         this.view = {0: false, 1: false, 2: false, 3: false};
         if (y > 0) { //look up;
-            if (race.pt[race.id(x, y - 1)].state != "wall")
+            if (race.pt[race.id(x, y - 1)].state != 'wall')
                 this.view[0] = true;
         }
         if (y < (race.ySize - 1)) { // down
-            if (race.pt[race.id(x, y + 1)].state != "wall")
+            if (race.pt[race.id(x, y + 1)].state != 'wall')
                 this.view[1] = true;
         }
         if (x > 0) { //left
-            if (race.pt[race.id(x - 1, y)].state != "wall")
+            if (race.pt[race.id(x - 1, y)].state != 'wall')
                 this.view[2] = true;
         }
         if (x < (race.xSize - 1)) { //right
-            if (race.pt[race.id(x + 1, y)].state != "wall")
+            if (race.pt[race.id(x + 1, y)].state != 'wall')
                 this.view[3] = true;
         }
     }

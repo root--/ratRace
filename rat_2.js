@@ -5,8 +5,6 @@ function rat_2() {
     this.preX = 0;
     this.preY = 0;
     this.curId = 0;
-    this.direction = 0;
-    this.predDirection = 0;
     this.finish = 0;
     this.movements = 0;
     this.steps = 0;
