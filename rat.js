@@ -1,4 +1,4 @@
-function rat(race) {
+function rat(race, memorySize, persistance) {
     this.x = 0;
     this.y = 0;
     this.preX = 0;
@@ -9,9 +9,10 @@ function rat(race) {
     this.steps = 0;
     this.priDir1 = -1;// priority direction1
     this.priDir2 = -1;// priority direction2
-    this.view = [];//current view around of the rat
+    this.view = {};//current view around of the rat
     this.des = [];//all decisions of rat movement [x y dir]
-    this.memorySize = 1;
+    this.memorySize = memorySize;
+    this.persistance = persistance;
 
     // born of the rat
     this.born = function () {
@@ -40,16 +41,17 @@ function rat(race) {
         }
 
         // first priority direction
-        var moving = this.tryShift(this.priDir1, 1);
+        var moving = this.tryShift(this.priDir1, true);
         // try to move another priority direction
         if (!moving) {
-            moving = this.tryShift(this.priDir2, 1);
+            moving = this.tryShift(this.priDir2, true);
         }
         //try to change direction and move
         if (!moving) {
-            for (var i = 0; i < 100; i++) {
+            for (var i = 0; i < this.persistance; i++) {
+                // new , non-stamped ,random decisions is key concept creative thinking
                 var randDir = Math.round(Math.random() * 3);
-                if (moving = this.tryShift(randDir, 0))
+                if (moving = this.tryShift(randDir, false))
                     break;// another direction
             }
         }
@@ -108,53 +110,46 @@ function rat(race) {
     }
 
     // try to shift to priority direction
-    this.tryShift = function (direction, mark) {
-        if (mark === undefined) {
-            mark = false;
-        }
+    this.tryShift = function (direction, directMovement) {
         var move = false;
         if (this.view[direction]) {
             var desId = this.dId(this.x, this.y, direction);
-            //activate decision counter;
+            //  activate decision counter;
             if (this.des[desId] === undefined)
                 this.des[desId] = 0;
 
-            var live = this.mustLive(desId);
-            // direction and no max come back
-            if (direction == 0 && live) {
-                this.shift(this.x, this.y - 1); // shift rat
-                if (mark)
-                    this.des[desId]++; //increase decision counter
-                move = true;
+            // is it totally wrong way or we can try to move it ?
+            var tryThatWay = this.tryThatWay(desId);
+            if (!tryThatWay) {
+                return false;
             }
-
-            if (direction == 1 && live) {
-                this.shift(this.x, this.y + 1);
-                if (mark)
-                    this.des[desId]++;
-                move = true;
+            // shift rat in selected direction
+            switch (direction) {
+                case 0:
+                    this.shift(this.x, this.y - 1);//up
+                    break;
+                case 1:
+                    this.shift(this.x, this.y + 1);//down
+                    break;
+                case 2:
+                    this.shift(this.x - 1, this.y);//left
+                    break;
+                case 3:
+                    this.shift(this.x + 1, this.y);//right
+                    break;
             }
-
-            if (direction == 2 && live) {
-                this.shift(this.x - 1, this.y);
-                if (mark)
-                    this.des[desId]++;
-                move = true;
-            }
-
-            if (direction == 3 && live) {
-                this.shift(this.x + 1, this.y);
-                if (mark)
-                    this.des[desId]++;
-                move = true;
-            }
+            if (directMovement)
+                this.des[desId] = this.steps; //save step number of decision
+            move = true;
         }
         return move;
     }
 
-    // decision to live ( it is not the end ! )
-    this.mustLive = function (desId) {
-        return this.des[desId] < this.memorySize
+    // try to move that way ( direction from current the point )
+    // can be override in different instances of rat .
+    // here - move that way if previous decision out of rat limit size or it is a new way
+    this.tryThatWay = function (desId) {
+        return ((this.steps - this.des[desId] > this.memorySize) || this.des[desId] == 0);
     }
 
     // shifting to next point
@@ -167,6 +162,7 @@ function rat(race) {
     }
 
     // looking around for walls and create this.view image of space around
+    // check map border and walls on all directions
     this.look = function (x, y) {
         this.view = {0: false, 1: false, 2: false, 3: false};
         if (y > 0) { //look up;
@@ -186,5 +182,4 @@ function rat(race) {
                 this.view[3] = true;
         }
     }
-
 }

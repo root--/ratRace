@@ -23,28 +23,28 @@ function Race(viewId, name) {
     this.name = name;
     this.speed = 120;
 
-// size
+    // size
     this.unitSize = 9;
 
-// field
+    // field
     this.xSize = 70;
     this.ySize = 70;
 
+    // walls
     this.wallDencity = 10;
-// walls
     this.spaces = this.xSize * this.ySize
     this.wallNum = +Math.round(( this.spaces ) / ( this.wallDencity + ( this.spaces / 1000 )));
     this.wallMaxLength = +Math.round((( this.xSize + this.ySize) / 20) + 1);
     this.wallMinLength = 2;
-// cheese
 
+    // cheese
     this.chX = -1;
     this.chY = -1;
-// array to store the field objects
+
+    // array to store the field objects
     this.pt = [];
 
-// actioin init
-
+    // actioin init
     this.init = function () {
         this.setStyles();
         this.fillMap();
@@ -57,12 +57,13 @@ function Race(viewId, name) {
         document.getElementById('main').style.height = this.unitSize * this.ySize;
     }
 
+    // runtime
     this.run;
-
     this.runTime = function () {
         this.run = setInterval(this.name + '.findStep()', this.speed);
     }
 
+    // race iteration step
     this.findStep = function () {
         if (!r.finish || !r2.finish) {
             r.move();
@@ -74,16 +75,16 @@ function Race(viewId, name) {
         }
     }
 
-//  point id formatter
+    //  point id formatter
     this.id = function (x, y) {
         return +x + "," + y;
     }
-// point id parser
+    // point id parser
     this.parseId = function (id) {
         return id.split(',');
     }
 
-// map creation
+    // map creation
     this.fillMap = function () {
         for (var i = 0; i != this.xSize; i++) {
             for (var k = 0; k != this.ySize; k++) {
@@ -92,12 +93,7 @@ function Race(viewId, name) {
         }
     }
 
-    this.clearMap = function () {
-        //erase objects
-        this.pt = {};
-        document.getElementById('main').innerHTML = "";
-    }
-
+    // buld the walls on map
     this.getWalls = function () {
         for (var i = 0; i < this.wallNum; i++) {
             // random point
@@ -126,6 +122,7 @@ function Race(viewId, name) {
         }
     }
 
+    // throw cheese and start the race !
     this.throwCheese = function (objId) {
         if (this.pt[objId].state !== "wall") {
             if (this.chX >= 0 && this.chY >= 0)
@@ -141,10 +138,10 @@ function Race(viewId, name) {
 
 // rat creation
     this.createRat = function () {
-        window.r = new rat(this);
+        window.r = new rat(this, 1, 100);
         r.born();
 
-        window.r2 = new rat(this);
+        window.r2 = new rat(this, 390, 410);
         r2.born();
     }
 

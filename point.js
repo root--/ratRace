@@ -1,5 +1,4 @@
-//point object
-
+//point of map object
 function Point(viewId) {
     this.x = 0;
     this.y = 0;
@@ -11,10 +10,8 @@ function Point(viewId) {
             '<div id="' + this.id + '" class="' + this.state + '"></div>'
         );
     };
-
     this.change = function (state) {
         this.state = state;
         document.getElementById(this.id).className = state;
     };
-
 }
