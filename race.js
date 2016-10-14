@@ -126,7 +126,7 @@ function Race(viewId, name) {
     this.throwCheese = function (objId) {
         if (this.pt[objId].state !== "wall") {
             if (this.chX >= 0 && this.chY >= 0)
-                this.pt[id(this.chX, this.chY)].change("default");
+                this.pt[this.id(this.chX, this.chY)].change("default");
             this.pt[objId].change("cheese");
             var coord = this.parseId(objId);
             this.chX = coord[0];
