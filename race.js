@@ -138,7 +138,7 @@ function Race(viewId, name) {
 
 // rat creation
     this.createRat = function () {
-        window.r = new rat(this, 40, 100);
+        window.r = new rat(this, 190, 200);
         r.born();
 
         window.r2 = new rat(this, 390, 410);
