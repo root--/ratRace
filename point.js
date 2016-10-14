@@ -4,14 +4,20 @@ function Point(viewId) {
     this.y = 0;
     this.id = '';
     this.state = 'default';
-    this.fill = function () {
-        document.getElementById(viewId).insertAdjacentHTML(
-            'beforeend',
-            '<div id="' + this.id + '" class="' + this.state + '"></div>'
-        );
-    };
-    this.change = function (state) {
-        this.state = state;
-        document.getElementById(this.id).className = state;
-    };
+    this.viewId = viewId;
 }
+
+// methods - to prototype because less of memory usage
+// there are lot of point objects in race
+
+Point.prototype.fill = function () {
+    document.getElementById(this.viewId).insertAdjacentHTML(
+        'beforeend',
+        '<div id="' + this.id + '" class="' + this.state + '"></div>'
+    );
+};
+
+Point.prototype.change = function (state) {
+    this.state = state;
+    document.getElementById(this.id).className = state;
+};
