@@ -66,8 +66,8 @@ function Race(viewId, name) {
     // race iteration step
     this.findStep = function () {
         if (!r.finish || !r2.finish) {
-            r.move();
-            r2.move();
+            if (!r.die) r.move();
+            if (!r2.die) r2.move();
         }
         else {
             clearInterval(this.run);
@@ -138,11 +138,17 @@ function Race(viewId, name) {
 
 // rat creation
     this.createRat = function () {
-        window.r = new rat(this, 190, 200);
+        r = new rat(this);
         r.born();
+        r.name = 'Jerry';
+        r.memorySize = 20;
+        r.persistance = 20;
 
-        window.r2 = new rat(this, 390, 410);
+        r2 = new rat(this);
         r2.born();
+        r2.name = 'Rockfor';
+        r.memorySize = 220;
+        r.persistance = 20;
     }
 
 // objects class (points of space) factory

@@ -1,18 +1,20 @@
 function rat(race, memorySize, persistance) {
+    this.name = '';
     this.x = 0;
     this.y = 0;
     this.preX = 0;
     this.preY = 0;
     this.curId = 0;
     this.finish = 0;
+    this.die = 0;
     this.movements = 0;
     this.steps = 0;
     this.priDir1 = -1;// priority direction1
     this.priDir2 = -1;// priority direction2
     this.view = {};//current view around of the rat
     this.des = [];//all decisions of rat movement [x y dir]
-    this.memorySize = memorySize;
-    this.persistance = persistance;
+    this.memorySize = 120;
+    this.persistance = 200;
 
     // born of the rat
     this.born = function () {
@@ -31,14 +33,19 @@ function rat(race, memorySize, persistance) {
 
     // iterate each step
     this.move = function () {
+        if (this.finish || this.die ) {
+            return;
+        }
         this.look(this.x, this.y);
         this.dirPriority();
         this.movements++;
-        // if no selected direction ( rat find the cheese )
-        if (this.priDir1 < 0 && this.priDir2 < 0) {
-            this.finish = true;
-            return;
-        }
+        // rat find the cheese !
+
+        // // if no selected direction ( rat find the cheese )
+        // if (this.priDir1 < 0 && this.priDir2 < 0) {
+        //     this.finish = true;
+        //     return;
+        // }
 
         // first priority direction
         var moving = this.tryShift(this.priDir1, true);
@@ -49,14 +56,16 @@ function rat(race, memorySize, persistance) {
         //try to change direction and move
         if (!moving) {
             for (var i = 0; i < this.persistance; i++) {
-                // new , non-stamped ,random decisions is key concept creative thinking
+                // new , non-stamped ,random decision is a key concept of creative thinking
                 var randDir = Math.round(Math.random() * 3);
                 if (moving = this.tryShift(randDir, false))
                     break;// another direction
             }
         }
         if (!moving) {
-            this.finish = true;// die without cheese :(
+            this.die = true;// die without cheese :(
+            race.pt[race.id(this.x, this.y)].change('rat_died');
+            l(this.name+' died on:'+this.steps);
         }
     }
 
@@ -106,6 +115,8 @@ function rat(race, memorySize, persistance) {
         if (xDif == 0 && yDif == 0) {
             this.priDir1 = -1;
             this.priDir2 = -1;
+            this.finish = true;
+            l(this.name+' finished on:'+this.steps);
         }
     }
 
@@ -118,7 +129,7 @@ function rat(race, memorySize, persistance) {
             if (this.des[desId] === undefined)
                 this.des[desId] = 0;
 
-            // is it totally wrong way or we can try to move it ?
+            // is it totally wrong way or we can try to move on it ?
             var tryThatWay = this.tryThatWay(desId);
             if (!tryThatWay) {
                 return false;
