@@ -42,10 +42,10 @@ function rat(race, memorySize, persistance) {
         // rat find the cheese !
 
         // // if no selected direction ( rat find the cheese )
-        // if (this.priDir1 < 0 && this.priDir2 < 0) {
-        //     this.finish = true;
-        //     return;
-        // }
+        if (this.priDir1 < 0 && this.priDir2 < 0) {
+            this.finish = true;
+            return;
+        }
 
         // first priority direction
         var moving = this.tryShift(this.priDir1, true);
